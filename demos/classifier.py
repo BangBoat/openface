@@ -31,6 +31,7 @@ import sys
 from operator import itemgetter
 
 import numpy as np
+
 np.set_printoptions(precision=2)
 import pandas as pd
 
@@ -104,9 +105,9 @@ def train(args):
     print("Loading embeddings.")
     fname = "{}/labels.csv".format(args.workDir)
     labels = pd.read_csv(fname, header=None).as_matrix()[:, 1]
-    labels = map(itemgetter(1),
+    labels = list(map(itemgetter(1),
                  map(os.path.split,
-                     map(os.path.dirname, labels)))  # Get the directory.
+                     map(os.path.dirname, labels))))  # Get the directory.
     fname = "{}/reps.csv".format(args.workDir)
     embeddings = pd.read_csv(fname, header=None).as_matrix()
     le = LabelEncoder().fit(labels)
@@ -167,16 +168,16 @@ def train(args):
 
     fName = "{}/classifier.pkl".format(args.workDir)
     print("Saving classifier to '{}'".format(fName))
-    with open(fName, 'w') as f:
+    with open(fName, 'wb') as f:
         pickle.dump((le, clf), f)
 
 
 def infer(args, multiple=False):
     with open(args.classifierModel, 'rb') as f:
         if sys.version_info[0] < 3:
-                (le, clf) = pickle.load(f)
+            (le, clf) = pickle.load(f)
         else:
-                (le, clf) = pickle.load(f, encoding='latin1')
+            (le, clf) = pickle.load(f, encoding='latin1')
 
     for img in args.imgs:
         print("\n=== {} ===".format(img))
