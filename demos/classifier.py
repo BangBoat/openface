@@ -42,7 +42,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
-from sklearn.mixture import GMM
+from sklearn.mixture import GaussianMixture
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 
@@ -102,6 +102,7 @@ def getRep(imgPath, multiple=False):
 
 
 def train(args):
+    clf = object
     print("Loading embeddings.")
     fname = "{}/labels.csv".format(args.workDir)
     labels = pd.read_csv(fname, header=None).as_matrix()[:, 1]
@@ -132,7 +133,7 @@ def train(args):
         ]
         clf = GridSearchCV(SVC(C=1, probability=True), param_grid, cv=5)
     elif args.classifier == 'GMM':  # Doesn't work best
-        clf = GMM(n_components=nClasses)
+        clf = GaussianMixture(n_components=nClasses)
 
     # ref:
     # http://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html#example-classification-plot-classifier-comparison-py
@@ -195,11 +196,11 @@ def infer(args, multiple=False):
             if args.verbose:
                 print("Prediction took {} seconds.".format(time.time() - start))
             if multiple:
-                print("Predict {} @ x={} with {:.2f} confidence.".format(person.decode('utf-8'), bbx,
+                print("Predict {} @ x={} with {:.2f} confidence.".format(person, bbx,
                                                                          confidence))
             else:
-                print("Predict {} with {:.2f} confidence.".format(person.decode('utf-8'), confidence))
-            if isinstance(clf, GMM):
+                print("Predict {} with {:.2f} confidence.".format(person, confidence))
+            if isinstance(clf, GaussianMixture):
                 dist = np.linalg.norm(rep - clf.means_[maxI])
                 print("  + Distance from the mean: {}".format(dist))
 
