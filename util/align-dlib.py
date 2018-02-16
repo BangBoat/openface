@@ -137,6 +137,7 @@ def alignMain(args):
     if args.fallbackLfw:
         print('nFallbacks:', nFallbacks)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 

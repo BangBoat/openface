@@ -106,9 +106,7 @@ def train(args):
     print("Loading embeddings.")
     fname = "{}/labels.csv".format(args.workDir)
     labels = pd.read_csv(fname, header=None).as_matrix()[:, 1]
-    labels = list(map(itemgetter(1),
-                 map(os.path.split,
-                     map(os.path.dirname, labels))))  # Get the directory.
+    labels = list(map(itemgetter(1), map(os.path.split, map(os.path.dirname, labels))))  # Get the directory.
     fname = "{}/reps.csv".format(args.workDir)
     embeddings = pd.read_csv(fname, header=None).as_matrix()
     le = LabelEncoder().fit(labels)
